@@ -22,6 +22,7 @@ class Book(Base):
     published_year = Column(Integer, nullable=False)  # Published year column
     genre = Column(String(255), nullable=True)  # Genre column, optional.
     isbn = Column(String(255), unique=True, nullable=False)  # ISBN column, unique identification
+    price = Column(Integer, nullable=False)  # price of book column
 
 app = FastAPI()  #instance of FastAPI
 
@@ -40,6 +41,7 @@ class BookCreate(BaseModel):
     published_year: int  # Published year , integer.
     genre: str  # Genre ,string.
     isbn: str  # ISBN ,string.
+    price: int # price, integer
 
 #pydantic schema for returning of book information, includes bookID
 class BookOut(BookCreate):
@@ -79,6 +81,7 @@ def create_book(book: BookCreate, db: Session = Depends(get_db)):
         published_year=book.published_year,  # set the year published 
         genre=book.genre,  # sets the book's genre
         isbn=book.isbn,  #sets the ISBN of the book
+        price=book.price # set price of book
     )
     db.add(db_book)  # adds the new book to the session
     db.commit()  #commits to save to the database
@@ -98,6 +101,7 @@ def update_book(book_id: int, updated_book: BookCreate, db: Session = Depends(ge
     db_book.published_year = updated_book.published_year  # Update the published year
     db_book.genre = updated_book.genre  # Update the genre
     db_book.isbn = updated_book.isbn  # Update the ISBN
+    db_book.price = updated_book.price #update price
     
     db.commit()  # Commit session to save changes
     db.refresh(db_book)  #refresh for updated data
